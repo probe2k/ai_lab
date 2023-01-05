@@ -1,12 +1,8 @@
-import numpy as np
-import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
-from sklearn import datasets
 
-names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'Class']
-df = pd.read_csv('file.csv', names = names)
+df = pd.read_csv('file.csv')
 
 x = df.iloc[:, :-1]
 y = df.iloc[:, -1]
