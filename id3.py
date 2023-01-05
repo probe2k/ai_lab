@@ -4,6 +4,8 @@ from sklearn import tree
 
 df = pd.read_csv('play.csv')
 
+# labelencoder domains might be different, check with df.head() before appending
+
 le = LabelEncoder()
 df['Outlook'] = le.fit_transform(df['Outlook'])
 df['Temperature'] = le.fit_transform(df['Temperature'])
