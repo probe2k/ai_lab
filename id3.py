@@ -1,20 +1,27 @@
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-from sklearn import tree
+from sklearn.feature_selection import mutual_info_classif
+from collections import Counter
 
-df = pd.read_csv('play.csv')
+def id3(df, target, attribute, default_class = None):
+	counter = Counter(x for x in df[target])
+	if len(counter) == 1:
+		return next(iter(counter))
+	elif df.empty or (not attribute):
+		return default_class
+	else:
+		gain = mutual_info_classif(df[attribute], df[target], discrete_features = True)
+		index = gain.tolist().index(max(gain))
+		best_attr = attribute[index]
+		tree = {best_attr: {}}
+		rem_attr = [i for i in attribute if i != best_attr]
 
-# labelencoder domains might be different, check with df.head() before appending
+		for attr, data in df.groupby(best_attr):
+			tree[best_attr][attr] = id3(data, target, rem_attr, default_class)
+		return tree
 
-le = LabelEncoder()
-df['Outlook'] = le.fit_transform(df['Outlook'])
-df['Temperature'] = le.fit_transform(df['Temperature'])
-df['Humidity'] = le.fit_transform(df['Humidity'])
-df['Wind'] = le.fit_transform(df['Wind'])
-df['Play Tennis'] = le.fit_transform(df['Play Tennis'])
-
-x = df.iloc[:, : -1]
-y = df.iloc[:, -1]
-
-classifier = tree.DecisionTreeClassifier(criterion = 'entropy').fit(x, y)
-tree.plot_tree(classifier)
+df = pd.read_csv('file.csv')
+attribute = df.columns.tolist()
+attribute.remove('answer')
+for cols in df.select_dtypes("object"):
+	df[cols], _ = df[cols].factorize()
+print(id3(df, 'answer', attribute))

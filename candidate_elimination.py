@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-data = pd.read_csv('file.csv')
-concepts = np.array(data.iloc[:, 0: -1])
+data = pd.read_csv(r'file.csv')
+concepts = np.array(data.iloc[:, : -1])
 target = np.array(data.iloc[:, -1])
 
 def learn(concepts, target):
